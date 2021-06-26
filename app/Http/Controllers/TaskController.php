@@ -13,7 +13,7 @@ class TaskController extends Controller
         $folders = Folder::all();
 
         $current_folder = Folder::find($id);
-        
+
         $tasks = $current_folder->tasks()->get();
 
 
