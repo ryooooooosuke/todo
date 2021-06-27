@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TaskController;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,13 +16,14 @@ use App\Http\Controllers\TaskController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
-Route::get('/folders/{id}/tasks', 'App\Http\Controllers\TaskController@index')->name('tasks.index');
-Route::get('/folders/create', 'App\Http\Controllers\FolderController@showCreateForm')->name('folders.create');
-Route::post('/folders/create', 'App\Http\Controllers\FolderController@create');
-Route::get('/folders/create', 'App\Http\Controllers\FolderController@showCreateForm')->name('folders.create');
-Route::post('/folders/create', 'App\Http\Controllers\FolderController@create');
-Route::get('/folders/{id}/tasks/create', 'App\Http\Controllers\TaskController@showCreateForm')->name('tasks.create');
-Route::post('/folders/{id}/tasks/create', 'App\Http\Controllers\TaskController@create');
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->name('dashboard');
